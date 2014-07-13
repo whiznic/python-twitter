@@ -2924,11 +2924,11 @@ class Api(object):
 
     if maxwidth is not None:
        parameters['maxwidth'] = maxwidth
-    if hide_media == True:
+    if hide_media:
        parameters['hide_media'] = 'true'
-    if hide_thread == True:
+    if hide_thread:
        parameters['hide_thread'] = 'true'
-    if omit_script == True:
+    if omit_script:
        parameters['omit_script'] = 'true'
     if align is not None:
        if align not in ('left', 'center', 'right', 'none'):
@@ -3092,8 +3092,7 @@ class Api(object):
     else:
       u_status = unicode(status, self._input_encoding)
 
-    data = {'status': status}
-    data['media'] = open(str(media), 'rb').read()
+    data = {'status': status, 'media': open(str(media), 'rb').read()}
     if possibly_sensitive:
       data['possibly_sensitive'] = 'true'
     if in_reply_to_status_id:
@@ -3498,8 +3497,7 @@ class Api(object):
     if not self.__auth:
       raise TwitterError("The twitter.Api instsance must be authenticated.")
     url = '%s/statuses/retweeters/ids.json' % (self.base_url)
-    parameters = {}
-    parameters['id'] = status_id
+    parameters = {'id': status_id}
     if stringify_ids:
       parameters['stringify_ids'] = 'true'
     result = []
@@ -5104,7 +5102,7 @@ class _FileCache(object):
              os.getenv('USERNAME') or \
              os.getlogin() or \
              'nobody'
-    except (AttributeError, IOError, OSError) as e:
+    except (AttributeError, IOError, OSError):
       return 'nobody'
 
   def _GetTmpCachePath(self):
@@ -5169,13 +5167,13 @@ class ParseTweet:
   @staticmethod
   def getAttributeRT( tweet ):
     """ see if tweet is a RT """
-    return re.search(ParseTweet.regexp["RT"],tweet.strip()) != None
+    return re.search(ParseTweet.regexp["RT"],tweet.strip()) is not None
 
   @staticmethod
   def getAttributeMT( tweet ):
     """ see if tweet is a MT """
-    return re.search(ParseTweet.regexp["MT"],tweet.strip()) != None
-  
+    return re.search(ParseTweet.regexp["MT"],tweet.strip()) is not None
+
   @staticmethod
   def getUserHandles( tweet ):
     """ given a tweet we try and extract all user handles in order of occurrence"""
